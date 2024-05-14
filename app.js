@@ -1,16 +1,20 @@
 const express = require('express')
 const app = express()
-const port = 8000
+require('dotenv').config()
+const port = process.env.PORT;
+const data = require('./db.json')
+const route = require('./routes/index.route')
+const morgan = require('morgan')
 
-app.get('/', (req, res) => {
-  res.send('Hello World hihi!')
-})
+app.use(express.json())
+//Sử dụng để thay thế app.use(bodyParser.json()) đọc, phân tích yêu cầu HTTP và chuyển JSON thành Object
 
-app.get('/test',(req,res)=>{
-  res.send('Test')
-})
+app.use(morgan('dev'))
+app.use(express.static('public'))
+//Router
+route(app)
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port: ${port}`)
 })
 
