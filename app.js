@@ -7,10 +7,9 @@ const route = require('./routes/index.route')
 const morgan = require('morgan')
 
 app.use(express.json())
-//Sử dụng để thay thế app.use(bodyParser.json()) đọc, phân tích yêu cầu HTTP và chuyển JSON thành Object
 
 app.use(morgan('dev'))
-app.use(express.static('public'))
+// app.use(express.static('public'))
 //Router
 route(app)
 

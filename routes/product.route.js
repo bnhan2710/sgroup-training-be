@@ -2,16 +2,12 @@ const express = require('express')
 const router = express.Router()
 const data = require('../db.json')
 const productModel = require('../models/service')
-
 router.get('/', (req, res) => {
     res.json(productModel.getAll())
 })
-router.get('/:id', (req,res)=>{
-    res.json(productModel.getOne(req.params.id))
-})
 router.post('/', (req, res) => {
     const dataCreate = req.body
-    productModel.create(dataCreate)
+    productModel.create(dataCreate) 
     res.json(productModel.getAll()) 
 })
 router.put('/:id',(req,res) =>{
