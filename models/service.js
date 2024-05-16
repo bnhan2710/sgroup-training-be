@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const datafile = require('../db.json');
-
-let data = datafile; 
-
+const data = require('../db.json');
 function writeData(data) {
     const filePath = path.join(__dirname, '../db.json');
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
@@ -14,23 +11,32 @@ function getAll() {
 }
 
 function getOne(id) {
-    return data.products.find(product => product.id === id);
+    const index =  data.products.findIndex(product => product.id === id);
+    if(index === -1) {
+        return null;
+    }
+    return data.products[index];
 }
 
 function create(product) {
+    let genid = data.products.length;
+    product.id = genid + 1;
     data.products.push(product);
     writeData(data);
     return product;
 }
 
 function update(id, product) {
-    const index = data.products.findIndex(product => product.id === id);
+    let index = data.products.findIndex(product => product.id === id);
+    if(index === -1) {
+        return null;
+    }
     data.products[index] = product;
     writeData(data);
-    return product;
 }
 
 function remove(id) {
+    console.log('id', id)
     const index = data.products.findIndex(product => product.id === id);
     data.products.splice(index, 1);
     writeData(data);

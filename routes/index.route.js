@@ -1,6 +1,6 @@
 const homepage = require('./home.route')
-const product = require('./product.route')
+const apiroute = require('./api.route')
 module.exports = (app) => {
     app.use('/', homepage)
-    app.use('/products', product)
+    app.use('/api', apiroute)
 }

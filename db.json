@@ -1,28 +1,34 @@
 {
   "products": [
     {
-      "id": "1",
+      "id": 1,
       "name": "Pizza",
       "price": "10",
       "quantity": "7"
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Cerveja",
       "price": "12",
       "quantity": "5"
     },
     {
-      "id": "3",
+      "id": 3,
       "name": "Hamburguer",
       "price": "10",
       "quantity": "2"
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "Fraldas",
       "price": "6",
       "quantity": "2"
+    },
+    {
+      "name": "Breadhihi",
+      "price": "2",
+      "quantity": "13",
+      "id": 5
     }
   ]
 }
