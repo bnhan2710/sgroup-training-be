@@ -1,29 +1,12 @@
-const express = require('express')
-const router = express.Router()
-const productModel = require('../models/service')
-router.get('/users', (req, res) => {
-    res.json(productModel.getAll())
-})
-router.get('/users/:id', (req, res) => {
-    const id = req.params.id
-    res.json(productModel.getOne(id))
-})
-router.post('/users', (req, res) => {
-    const dataCreate = req.body
-    productModel.create(dataCreate) 
-    res.json(productModel.getAll()) 
-})
-router.put('/users/:id',(req,res) =>{
-    const id = req.params.id
-    const dataUpdate = req.body
-    productModel.update(id,dataUpdate)
-    res.json(productModel.getAll())
-})
+// routes/productRoutes.js
+const express = require('express');
+const router = express.Router();
+const productController = require('../controllers/productsControllers');
 
-router.delete('/users/:id', (req, res) => {
-    const id = req.params.id
-    productModel.remove(id)
-    res.json(productModel.getAll())
-})
+router.get('/users', productController.getAll);
+router.get('/users/:id', productController.getOne);
+router.post('/users', productController.create);
+router.put('/users/:id', productController.update);
+router.delete('/users/:id', productController.remove);
 
-module.exports = router
+module.exports = router;
