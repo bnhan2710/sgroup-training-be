@@ -1,3 +1,4 @@
+// services/productService.js
 const fs = require('fs');
 const path = require('path');
 const data = require('../db.json');
@@ -12,9 +13,9 @@ function getAll() {
 }
 
 function getOne(id) {
-    const index =  data.products.findIndex(product => product.id === id);
-    if(index === -1) {
-        return id;
+    const index = data.products.findIndex(product => product.id === id);
+    if (index === -1) {
+        return null;
     }
     return data.products[index];
 }
@@ -28,21 +29,24 @@ function create(product) {
     return product;
 }
 
-
 function update(id, product) {
     let index = data.products.findIndex(product => product.id === id);
-    if(index === -1) {
+    if (index === -1) {
         return null;
     }
-    data.products[index] = product;
+    data.products[index] = { id, ...product };
     writeData(data);
+    return data.products[index];
 }
 
 function remove(id) {
-    console.log('id', id)
     const index = data.products.findIndex(product => product.id === id);
-    data.products.splice(index, 1);
+    if (index === -1) {
+        return null;
+    }
+    const removedProduct = data.products.splice(index, 1);
     writeData(data);
+    return removedProduct;
 }
 
 module.exports = {

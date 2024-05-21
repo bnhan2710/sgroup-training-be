@@ -7,21 +7,28 @@
       "quantity": "7"
     },
     {
-      "id": "3",
+      "id": "2",
       "name": "Hamburguer",
       "price": "10",
       "quantity": "2"
     },
     {
-      "id": "4",
-      "name": "Fraldas",
+      "id": "3",
+      "name": "Bacon",
       "price": "6",
       "quantity": "2"
     },
     {
-      "name": "Breadhaha",
+      "name": "Bread",
       "price": "2",
-      "quantity": "13"
+      "quantity": "13",
+      "id": "4"
+    },
+    {
+      "name": "Banh mi dau",
+      "price": "2",
+      "quantity": "13",
+      "id": "5"
     }
   ]
 }
