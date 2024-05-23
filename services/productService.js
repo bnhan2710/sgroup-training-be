@@ -4,8 +4,12 @@ const path = require('path');
 const data = require('../db.json');
 
 function writeData(data) {
+    try{
     const filePath = path.join(__dirname, '../db.json');
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch(err) {
+        console.log('Write data error');
+    }
 }
 
 function getAll() {
