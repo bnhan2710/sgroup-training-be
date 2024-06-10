@@ -1,6 +1,6 @@
-const homepage = require('./home.route')
-const apiroute = require('./api.route')
+const login = require('./login.js')
+const user = require('./user.route.js')
 module.exports = (app) => {
-    app.use('/', homepage)
-    app.use('/api', apiroute)
+    app.use('/login',login )
+    app.use('/customers',user )
 }
