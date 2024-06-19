@@ -21,14 +21,8 @@
     {
       "name": "Bread",
       "price": "2",
-      "quantity": "13",
+      "quantity": "3",
       "id": "4"
-    },
-    {
-      "name": "Banh mi dau",
-      "price": "2",
-      "quantity": "13",
-      "id": "5"
     }
   ]
 }
