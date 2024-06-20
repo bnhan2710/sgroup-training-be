@@ -11,9 +11,13 @@ const pool = mysql.createPool({
 });
 
 const testConnection = async () => {
+  try{
   const connection = await pool.getConnection();
   console.log('Database connected !!');
   connection.release();
+  }catch(err){
+    console.log('Connect Database Fail !!')
+  }
 };
 testConnection();
 
