@@ -33,8 +33,8 @@ const createUser = async (user) =>{
         `;
         
         await pool.query(insertQuery, [gender, name, username, age, password, email]);
-        const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [username]); 
-        res.status(200).json(users[0]);
+        const [users] = await pool.query('SELECT * FROM users WHERE useranme = ?', [username]); 
+        return users[0];
     } catch (err){
         console.error(err);
         return;
@@ -55,6 +55,7 @@ const updateUser = async (id, user) =>{
          return;
     }
     }
+    
 const deleteUser = async (id) =>{
     try {
         const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);

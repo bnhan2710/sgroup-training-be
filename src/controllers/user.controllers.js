@@ -19,10 +19,6 @@ const getUserById = async(req, res) => {
         if(user){
             res.status(200).json(user);
         }
-        else{
-            res.status(404).json({message: "User not found"});
-        
-    }
     }catch(err){
         console.error(err);
         res.status(500).json({message: "Internal server error"});
