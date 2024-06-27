@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const userControllers = require("../controllers/user.controllers.js");
+const verifyToken = require('../middleware/verifyToken.js')
 //GET ALL USERS
-router.get("/", userControllers.getAllUsers);
+router.get("/",verifyToken, userControllers.getAllUsers);
 //GET USER BY ID
 router.get("/:id", userControllers.getUserById);
 //CREATE USER
