@@ -1,4 +1,3 @@
-const pool = require('../configs/database');
 const userService = require('../services/user.service');
 
 const getAllUsers = async (req, res) => {

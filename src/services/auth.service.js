@@ -1,9 +1,8 @@
-
 const pool = require('../configs/database');
 const bcrypt =require('bcrypt');
-const { access } = require('fs');
 const jwt = require('jsonwebtoken')
-const dotenv = require('dotenv').config()
+require('dotenv').config()
+
 const registerService = async (user) => {
     const { gender, name, username, age, password, email } = user;
     try {
@@ -38,7 +37,9 @@ const loginService = async (user) => {
             return {error: 'Password is incorrect'}
         }
             const accessToken =  await generateAccessToken(user)
-        return accessToken;
+            const refreshToken = await generateRefreshToken(user)
+            const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION, ...other } = userInfo[0][0];
+            return { accessToken, refreshToken,other};
     } catch (error) {
         return { error: 'Login failed!'};
     }``
@@ -48,12 +49,23 @@ const generateAccessToken = async (user) => {
     return jwt.sign(
         {
             id: user.id,
+            username: user.username,
         },
         process.env.SECRET_KEY,
-        { expiresIn: "1d" }
+        { expiresIn: "45s" }
     );
 };
 
+const generateRefreshToken = async (user) =>{
+    return jwt.sign(
+        {
+            id: user.id,
+            username: user.username
+        },
+        process.env.SECRET_KEY,
+        {expiresIn: "365d"}
+    )
+}
 
 
 module.exports = {
