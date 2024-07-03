@@ -14,20 +14,52 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const {refreshToken,accessToken,other} = await authService.loginService(req.body);
+    const {accessToken,refreshToken,other} = await authService.loginService(req.body);
     if (other.error) {
       return res.status(400).json({ message: other.error });
-    }
-    res.cookie('refreshToken', refreshToken, {
+    }        
+
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
-  });            
+      path: "/",
+      sameSite: "strict",
+  });
+
     res.status(200).json({ message: "Login successfuly!", accessToken,other });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const requestNewToken = async(req,res) =>{
+    const refreshToken = req.cookies.refreshToken
+    if(!refreshToken){
+      return res.status(400).json({message: "Please login first"})
+    }
+    try{
+     const  {newAccessToken,newRefreshToken} =  authService.requestNewToken(refreshToken)
+     if(newAccessToken.error){
+       return res.status(400).json({message: newAccessToken.error})
+     }
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: false,
+      });
+      res.status(200).json({accessToken: newAccessToken})
+    }catch(err){
+      res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const logoutUser = async (req, res) => {
+    try{
+      res.clearCookie("refreshToken");
+      await authService.logoutService(req.cookies.refreshToken)
+    }catch(err){
+      res.status(500).json({ message: "Internal server error" })
+    }
+}
 
 const forgotPassword = async(req,res) =>{
   const {email} = req.body 
@@ -63,5 +95,7 @@ module.exports = {
   loginUser,
   registerUser,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  requestNewToken,
+  logoutUser
 };

@@ -3,8 +3,9 @@ const bcrypt =require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto  = require('crypto');
 const mailService = require('../utils/mail.service');
-const { error } = require('console');
 require('dotenv').config()
+
+let refreshTokens = [];
 
 const registerService = async (user) => {
     const { gender, name, username, age, password, email } = user;
@@ -20,6 +21,8 @@ const registerService = async (user) => {
             [gender, name, username, age, hashedPassword, email]
         );
         const [newUser] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+
+
         const { PASSWORD,SALT,FORGET_PASSWORD_TOKEN,FORGET_PASSWORD_TOKEN_EXPIRATION, ...other } = newUser[0];
         return other;
     } catch (error) {
@@ -39,37 +42,37 @@ const loginService = async (user) => {
         if(!validPass){
             return {error: 'Password is incorrect'}
         }
-            const accessToken =  await generateAccessToken(user)
-            const refreshToken = await generateRefreshToken(user)
+        const accessToken =  await generateAccessToken(userInfo[0][0])
+        const refreshToken = await generateRefreshToken(userInfo[0][0])
+        refreshTokens.push(refreshToken)
             const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION, ...other } = userInfo[0][0];
-            return { accessToken, refreshToken,other};
+            return { accessToken,refreshToken,other};
     } catch (error) {
         return { error: 'Login failed!'};
     }
 };
 
-const generateAccessToken = async (user) => {
+const generateAccessToken = (user) => {
+
+        return jwt.sign(
+            { id: user.ID },
+            process.env.SECRET_KEY,
+            { expiresIn: "45s" }
+        );
+};
+
+
+
+const generateRefreshToken = async (user) => {
     return jwt.sign(
         {
-            id: user.id,
-            username: user.username,
+            id: user.ID,
         },
         process.env.SECRET_KEY,
-        { expiresIn: "45s" }
+        { expiresIn: "365d" }
     );
 };
 
-const generateRefreshToken = async (user) =>{
-    return jwt.sign(
-        {
-            id: user.id,
-            username: user.username
-        },
-        process.env.SECRET_KEY,
-        {expiresIn: "365d"}
-    )
-}
-    
 
 const forgotPassword = async (email) => {
     try {
@@ -121,10 +124,33 @@ const resetPassword = async (token, body) => {
       return { err: 'Reset password failed!' };
     }
   }
-  
+
+const requestNewToken = async (refreshToken) => {
+    if(!refreshTokens.includes(refreshToken)){
+        return {err: 'Refresh token not valid'}
+    }
+    jwt.verify(refreshToken,process.env.SECRET_KEY,(err,user) =>{
+        if(err){
+            return {err: 'Token not valid'}
+        }
+        refreshTokens = refreshTokens.filter((token) =>{token!==refreshToken});
+        const newAccessToken =  authControllers.generateAccessToken(user)
+        const newRefreshToken = authControllers.generateRefreshToken(user)
+        refreshTokens.push(newRefreshToken)
+        return { newAccessToken,newRefreshToken }
+    })
+}
+
+const logoutService = async (refreshToken) => {
+    refreshTokens = refreshTokens.filter((token) => { token !== refreshToken });
+};
+
+
 module.exports = {
     loginService,
     registerService,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    requestNewToken,
+    logoutService
 };
