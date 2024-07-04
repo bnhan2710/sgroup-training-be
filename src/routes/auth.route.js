@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const authController = require('../controllers/auth.controllers')
-const verifyToken = require('../middleware/verifyToken')
+const verifyToken = require('../middlewares/verifyToken')
 // Login
 router.post('/login', authController.loginUser)
 // Register

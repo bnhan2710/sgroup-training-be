@@ -134,8 +134,8 @@ const requestNewToken = async (refreshToken) => {
             return {err: 'Token not valid'}
         }
         refreshTokens = refreshTokens.filter((token) =>{token!==refreshToken});
-        const newAccessToken =  authControllers.generateAccessToken(user)
-        const newRefreshToken = authControllers.generateRefreshToken(user)
+        const newAccessToken =  generateAccessToken(user)
+        const newRefreshToken = generateRefreshToken(user)
         refreshTokens.push(newRefreshToken)
         return { newAccessToken,newRefreshToken }
     })
