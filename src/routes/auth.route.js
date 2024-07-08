@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const authController = require('../controllers/auth.controllers')
+const authController = require('../controllers/auth/auth.controllers')
 const verifyToken = require('../middlewares/verifyToken')
 // Login
 router.post('/login', authController.loginUser)

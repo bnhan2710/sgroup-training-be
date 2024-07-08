@@ -4,6 +4,7 @@ const route = require("./routes/index.route");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const pool = require("./configs/database");
+const knex = require("./configs/knexdb");
 dotenv.config();
 
 const port = process.env.PORT || 8000;

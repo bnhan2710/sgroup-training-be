@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const userControllers = require("../controllers/user.controllers.js");
+const userControllers = require("../controllers/User/user.controllers.js");
 const verifyToken = require('../middlewares/verifyToken.js')
 //GET ALL USERS
 router.get("/",verifyToken, userControllers.getAllUsers);
@@ -12,4 +12,6 @@ router.post("/", userControllers.createUser);
 router.put("/:id", userControllers.updateUser);
 //DELETE USER
 router.delete("/:id", userControllers.deleteUser);
+//GET ALL USER WITH PAGINATION
+router.get("/get/:id", userControllers.getUserById);
 module.exports = router;

@@ -1,4 +1,4 @@
-const userService = require('../services/user.service');
+const userService = require('../../services/user.service');
 
 const getAllUsers = async (req, res) => {
     try {
@@ -62,7 +62,6 @@ const deleteUser = async(req, res) =>{
         res.status(500).json({ message: "Internal server error" });
     }
 }
-
 
 module.exports = {
     getAllUsers,
