@@ -16,16 +16,16 @@ const createUsersTableQuery = `
         FORGET_PASSWORD_TOKEN_EXPIRATION DATETIME,
         CHECK (AGE > 0)
     )`;
-const createPollsTableQuery = `
+    const createPollsTableQuery = `
     CREATE TABLE IF NOT EXISTS POLLS (
-        ID NVARCHAR(256) PRIMARY KEY,
+        ID INT PRIMARY KEY AUTO_INCREMENT,
         NAME NVARCHAR(256),
         DESCRIPTION NVARCHAR(256),
         QUESTION NVARCHAR(256)
     )`;
 const createOptionsTableQuery = `
     CREATE TABLE IF NOT EXISTS OPTIONS (
-        ID NVARCHAR(256) PRIMARY KEY,
+        ID INT PRIMARY KEY AUTO_INCREMENT,
         TITLE NVARCHAR(256),
         POLLID NVARCHAR(256),
         CONSTRAINT fk_poll_option FOREIGN KEY (POLLID) REFERENCES POLLS(ID) ON UPDATE CASCADE ON DELETE CASCADE
@@ -33,12 +33,11 @@ const createOptionsTableQuery = `
 const createUserOptionsTableQuery = `
     CREATE TABLE IF NOT EXISTS USER_OPTIONS (
         USERID INT,
-        OPTIONID NVARCHAR(256),
+        OPTIONID INT,
         PRIMARY KEY(USERID, OPTIONID),
         CONSTRAINT fk_user_option FOREIGN KEY (USERID) REFERENCES USERS(ID) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT fk_option_option FOREIGN KEY (OPTIONID) REFERENCES OPTIONS(ID) ON UPDATE CASCADE ON DELETE CASCADE
-    )`;
-
+    )`; 
 (async () => {
     const connection = await pool.getConnection();
     try {
