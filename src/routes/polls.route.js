@@ -8,9 +8,11 @@ router.post("/update/:id", pollsController.updatePoll);
 //VIEW POLL ALL DETAILS
 router.get("/get", pollsController.getPolls);
 //GET POLL BY ID
-// router.get("/get/:id", pollsController.getPollById);
-//SUBMIT and UNSUBMIT OPTION
-// router.post("/submit", pollsController.submitOption);
+router.get("/get/:id", pollsController.getPollById); 
+//SUBMIT
+router.post("/submit", pollsController.submitOption);
+//SUBMIT 
+router.delete('/unsubmit',pollsController.unsubmitOption)
 //DELETE POLL
 router.delete("/delete/:id", pollsController.deletePoll);
 module.exports = router;
