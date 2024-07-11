@@ -2,7 +2,8 @@ const pollsService = require('../services/polls.service');
 
 const createPoll = async (req, res) => {
     try {
-        const createPoll = await pollsService.createPoll(req.body);
+        const userID =   req.socket._httpMessage.userID
+        const createPoll = await pollsService.createPoll(req.body,userID);
         return res.status(createPoll.status).send(createPoll.message);
     } catch (error) {
         return res.status(500).send('Internal server error');
@@ -40,6 +41,18 @@ const getPollById = async(req,res) => {
     }
 }
 
+const lockPoll = async(req,res) =>{
+    try{
+        const userID =   req.socket._httpMessage.userID
+        const pollid = req.params.id
+        console.log(userID,pollid)
+        const lockpolls = await pollsService.lockPoll(pollid,userID);
+        return res.status(lockpolls.status).send(lockpolls.message);
+    }catch(err){
+        return res.status(500).send('Internal server error')
+    }
+}
+
 const deletePoll = async(req,res) => {
     try {
         const pollid = req.params.id;
@@ -52,8 +65,9 @@ const deletePoll = async(req,res) => {
 
 const submitOption = async(req,res) => {
     try {
-        const {pollid,optionid,userid} = req.body;
-        const submit = await pollsService.submitOption(pollid,optionid,userid);
+        const {pollid,optionid} = req.body;
+        const userID =   req.socket._httpMessage.userID
+        const submit = await pollsService.submitOption(pollid,optionid,userID);
         return res.status(submit.status).send(submit.message);
     } catch (error) {
         return res.status(500).send('Internal server error');
@@ -62,13 +76,15 @@ const submitOption = async(req,res) => {
 
 const unsubmitOption = async(req,res) =>{
     try{
-        const {pollid,optionid,userid} = req.body;
-        const unsubmit = await pollsService.unsubmitOption(pollid,optionid,userid)
+        const {pollid,optionid} = req.body;
+        const userID =   req.socket._httpMessage.userID
+        const unsubmit = await pollsService.unsubmitOption(pollid,optionid,userID)
         return res.status(unsubmit.status).send(unsubmit.message)
     }catch(err){
         res.status(500).send('Internal server error')
     }
 }
+
 module.exports = {
     createPoll,
     updatePoll,
@@ -76,5 +92,6 @@ module.exports = {
     getPollById,
     deletePoll,
     submitOption,
-    unsubmitOption
+    unsubmitOption,
+    lockPoll
 }

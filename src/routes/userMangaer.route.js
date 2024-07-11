@@ -16,4 +16,5 @@ router.get('/get/:id',userManagerController.getUserById);
 
 //GET USER WITH PAGINATION
 router.get('/get',userManagerController.getUserWithPagination);
+
 module.exports = router;

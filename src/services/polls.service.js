@@ -2,15 +2,22 @@ const knex = require("../configs/knexdb");
 
 class pollsService {
     //CREATE POLL
-    createPoll = async (data) => {
+    createPoll = async (data,userID) => {
         const {name , description} = data;
         const CreatedAt = new Date();
+        if(!name || !description){
+            return{
+                status: 400,
+                message: "Please provide complete Poll information "
+            }
+        }
         try {
             const createPoll = await knex('polls').
             insert({
                 name,
                 description,
                 CreatedAt,
+                CreatedBy: userID,
                 isLock: 0
             });
             return {
@@ -203,6 +210,39 @@ class pollsService {
             return {
                 status: 500,
                 message: 'Delete failed'
+            }
+        }
+    }
+    lockPoll = async(pollid,userID) => {
+     try{   
+        if(!pollid){
+            return { 
+                status:400,
+                message:'Please provide poll id'
+            }
+        }
+        const polls = await knex('polls').select('*').where('ID', pollid);
+        if(polls.length === 0){
+            return {
+                status: 404,
+                message: 'Poll not found'
+            }
+           }
+           if(!polls[0].CreatedBy===userID){
+                return {
+                    status: 400,
+                    message: 'You are not have permission to lock'
+                }
+           }
+           await knex('polls').update({ isLock: 1 }).where({ ID: pollid, CreatedBy: userID });
+           return{
+                status:200,
+                message:'Lock poll successfully'
+           }
+        }catch(err){
+            return {
+                status: 500,
+                message:'Lock poll failed'
             }
         }
     }

@@ -45,7 +45,7 @@ const loginService = async (user) => {
         const accessToken =  await generateAccessToken(userInfo[0][0])
         const refreshToken = await generateRefreshToken(userInfo[0][0])
         refreshTokens.push(refreshToken)
-            const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION, ...other } = userInfo[0][0];
+            const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION,CreatedBy,CreatedAt,...other } = userInfo[0][0];
             return { accessToken,refreshToken,other};
     } catch (error) {
         return { error: 'Login failed!'};
@@ -57,7 +57,7 @@ const generateAccessToken = (user) => {
         return jwt.sign(
             { id: user.ID },
             process.env.SECRET_KEY,
-            { expiresIn: "45s" }
+            { expiresIn: "90s" }
         );
 };
 
