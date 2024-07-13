@@ -54,3 +54,47 @@ const createUserOptionsTableQuery = `
         connection.release();
     }
 })();
+
+// For authorization feature
+
+// CREATE TABLE role(
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     role_name VARCHAR(50) NOT NULL UNIQUE,
+//     description VARCHAR(255)
+// );
+
+// CREATE TABLE permission(
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     permission_name VARCHAR(50) NOT NULL UNIQUE,
+//     description VARCHAR(255)
+// );
+
+
+// CREATE TABLE user_role(
+//     user_id INT,
+//     role_id INT,
+//     PRIMARY KEY (user_id, role_id),
+//     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+//     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
+// );
+
+// CREATE TABLE role_permission(
+//     role_id INT,
+//     permission_id INT,
+//     PRIMARY KEY (role_id, permission_id),
+//     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+//     FOREIGN KEY (permission_id) REFERENCES permission(id) ON DELETE CASCADE
+// );
+
+
+
+// INSERT INTO role(code) VALUES('admin'), ('staff');
+// INSERT INTO user_role(roleId, userId) VALUES (1, 1);
+// INSERT INTO permission_group(description) VALUES ('UserManagement');
+// INSERT INTO permission_group(description) VALUES ('RoleManagement');
+// INSERT INTO permission(code, description, groupId) VALUES ('CanReadUser', 'User List Information Read', 1);
+// INSERT INTO permission(code, description, groupId) VALUES ('CanCreateUser', 'User Create', 1);
+// INSERT INTO permission(code, description, groupId) VALUES ('CanCreateRole', 'Role Create', 2);
+// INSERT INTO role_permission(roleId, permissionId) VALUES(1, 1);
+// INSERT INTO role_permission(roleId, permissionId) VALUES(1, 2);
+//
