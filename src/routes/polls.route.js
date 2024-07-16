@@ -16,5 +16,5 @@ router.delete('/unsubmit',verifyToken,pollsController.unsubmitOption)
 //LOCK POLL
 router.post('/lock/:id',verifyToken,pollsController.lockPoll)
 //DELETE POLL
-router.delete("/delete/:id", pollsController.deletePoll);
+router.delete("/delete/:id" ,verifyToken, pollsController.deletePoll);
 module.exports = router;

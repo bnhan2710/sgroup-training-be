@@ -1,3 +1,4 @@
+const { log } = require("handlebars");
 const authService = require("../../services/auth.service");
 
 const registerUser = async (req, res) => {
@@ -38,15 +39,21 @@ const requestNewToken = async(req,res) =>{
       return res.status(400).json({message: "Please login first"})
     }
     try{
-     const  {newAccessToken,newRefreshToken} =  authService.requestNewToken(refreshToken)
-     if(newAccessToken.error){
-       return res.status(400).json({message: newAccessToken.error})
-     }
+        const token = await authService.requestNewToken(refreshToken)
+        if(!token) return res.status(400).json({message: "Invalid refresh token"})
+          console.log(token.message)
+     const newAccessToken = token.message.newAccessToken
+     const newRefreshToken = token.message.newRefreshToken
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: false,
       });
-      res.status(200).json({accessToken: newAccessToken})
+
+      res.status(token.code).json({
+        message: "Token refreshed successfully",
+        accessToken: newAccessToken
+      })
+      
     }catch(err){
       res.status(500).json({ message: "Internal server error" });
     }
@@ -56,6 +63,8 @@ const logoutUser = async (req, res) => {
     try{
       res.clearCookie("refreshToken");
       await authService.logoutService(req.cookies.refreshToken)
+      res.status(200).json({ message: "Logged out successfully" });
+
     }catch(err){
       res.status(500).json({ message: "Internal server error" })
     }

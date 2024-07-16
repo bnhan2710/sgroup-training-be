@@ -191,7 +191,7 @@ class pollsService {
         }
     }
     //DELETE POLL
-    deletePoll = async(pollid) =>{
+    deletePoll = async(pollid,userID) =>{
         try {
             const polls = await knex('polls').select('*').where('ID', pollid);
             if(polls.length === 0){
@@ -200,6 +200,14 @@ class pollsService {
                     message: 'Poll not found'
                 }
             }
+
+            if(!polls[0].CreatedBy===userID){
+                return {
+                    status: 400,
+                    message: 'You are not have permission to Delete'
+                }
+           }
+
             await knex('polls').where('ID', pollid).del();
             return {
                 status: 200,
@@ -213,6 +221,7 @@ class pollsService {
             }
         }
     }
+    //LOCK POLL
     lockPoll = async(pollid,userID) => {
      try{   
         if(!pollid){

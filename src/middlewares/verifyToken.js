@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken');
                 next();
             });
         } else {
-            return res.status(401).json("You are not authenticated");
+            return res.status(401).json("You are not authenticated, please login first");
         }
     }
 module.exports = verifyToken

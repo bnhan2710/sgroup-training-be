@@ -45,7 +45,6 @@ const lockPoll = async(req,res) =>{
     try{
         const userID =   req.socket._httpMessage.userID
         const pollid = req.params.id
-        console.log(userID,pollid)
         const lockpolls = await pollsService.lockPoll(pollid,userID);
         return res.status(lockpolls.status).send(lockpolls.message);
     }catch(err){
@@ -55,8 +54,9 @@ const lockPoll = async(req,res) =>{
 
 const deletePoll = async(req,res) => {
     try {
-        const pollid = req.params.id;
-        const DELETE = await pollsService.deletePoll(pollid);
+        const userID =   req.socket._httpMessage.userID
+        const pollid = req.params.id
+        const DELETE = await pollsService.deletePoll(pollid,userID);
         return res.status(DELETE.status).send(DELETE.message);
     } catch (error) {
         return res.status(500).send('Internal server error');

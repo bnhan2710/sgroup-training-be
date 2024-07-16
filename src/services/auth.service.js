@@ -9,6 +9,7 @@ let refreshTokens = [];
 
 const registerService = async (user) => {
     const { gender, name, username, age, password, email } = user;
+    const created_at = new Date();
     try {
         const [existingUser] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         if (existingUser.length !== 0) {
@@ -17,13 +18,13 @@ const registerService = async (user) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         await pool.query(
-            'INSERT INTO users (gender, name, username, age, password, email) VALUES (?, ?, ?, ?, ?, ?)',
-            [gender, name, username, age, hashedPassword, email]
+            'INSERT INTO users (gender, name, username, age, password, email,CreatedAt) VALUES (?, ?, ?, ?, ?, ?,?)',
+            [gender, name, username, age, hashedPassword, email,created_at]
         );
         const [newUser] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
 
 
-        const { PASSWORD,SALT,FORGET_PASSWORD_TOKEN,FORGET_PASSWORD_TOKEN_EXPIRATION, ...other } = newUser[0];
+        const { PASSWORD,SALT,FORGET_PASSWORD_TOKEN,FORGET_PASSWORD_TOKEN_EXPIRATION,CreatedBy, ...other } = newUser[0];
         return other;
     } catch (error) {
         return { error: 'Register failed!' };
@@ -44,7 +45,9 @@ const loginService = async (user) => {
         }
         const accessToken =  await generateAccessToken(userInfo[0][0])
         const refreshToken = await generateRefreshToken(userInfo[0][0])
+
         refreshTokens.push(refreshToken)
+        // console.log(refreshTokens)
             const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION,CreatedBy,CreatedAt,...other } = userInfo[0][0];
             return { accessToken,refreshToken,other};
     } catch (error) {
@@ -63,7 +66,7 @@ const generateAccessToken = (user) => {
 
 
 
-const generateRefreshToken = async (user) => {
+const generateRefreshToken = (user) => {
     return jwt.sign(
         {
             id: user.ID,
@@ -125,21 +128,50 @@ const resetPassword = async (token, body) => {
     }
   }
 
-const requestNewToken = async (refreshToken) => {
-    if(!refreshTokens.includes(refreshToken)){
-        return {err: 'Refresh token not valid'}
-    }
-    jwt.verify(refreshToken,process.env.SECRET_KEY,(err,user) =>{
-        if(err){
-            return {err: 'Token not valid'}
-        }
-        refreshTokens = refreshTokens.filter((token) =>{token!==refreshToken});
-        const newAccessToken =  generateAccessToken(user)
-        const newRefreshToken = generateRefreshToken(user)
-        refreshTokens.push(newRefreshToken)
-        return { newAccessToken,newRefreshToken }
-    })
-}
+  const requestNewToken = async (refreshToken) => {
+      try {  
+          if (!refreshTokens.includes(refreshToken)) {
+              return {
+                  code: 403,
+                  message: 'Refresh token not found'
+              };
+          }
+          const user = await new Promise((resolve, reject) => {
+              jwt.verify(refreshToken, process.env.SECRET_KEY, (err, user) => {
+                  if (err) {
+                      reject({
+                          code: 403,
+                          message: 'Token not valid'
+                      });
+                  } else {
+                      resolve(user);
+                  }
+              });
+          });
+          refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+        
+          const newAccessToken = generateAccessToken(user);
+          const newRefreshToken = generateRefreshToken(user);
+          refreshTokens.push(newRefreshToken);
+          return {
+              code: 200,
+              message: {
+                  newAccessToken,
+                  newRefreshToken
+              }
+          };
+      } catch (err) {
+          if (err.code) {
+              return err; 
+          }
+          console.log(err);
+          return {
+              code: 500,
+              message: 'Request new token failed'
+          };
+      }
+  };
+  
 
 const logoutService = async (refreshToken) => {
     refreshTokens = refreshTokens.filter((token) => { token !== refreshToken });
