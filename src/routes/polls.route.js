@@ -4,11 +4,11 @@ const verifyToken = require('../middlewares/verifyToken');
 //CREATE POLL
 router.post("/create",verifyToken, pollsController.createPoll);
 //UPDATE POLL
-router.post("/update/:id", pollsController.updatePoll);
+router.put("/update/:id", pollsController.updatePoll);
 //VIEW POLL ALL DETAILS
-router.get("/get", pollsController.getPolls);
+router.get("/", pollsController.getPolls);
 //GET POLL BY ID
-router.get("/get/:id", pollsController.getPollById); 
+router.get("/:id", pollsController.getPollById); 
 //SUBMIT
 router.post("/submit",verifyToken, pollsController.submitOption);
 //SUBMIT 

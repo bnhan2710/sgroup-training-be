@@ -15,9 +15,9 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const {accessToken,refreshToken,other} = await authService.loginService(req.body);
-    if (other.error) {
-      return res.status(400).json({ message: other.error });
+    const {accessToken,refreshToken,other,error} = await authService.loginService(req.body);
+    if (error) {
+      return res.status(400).json({ message: error });
     }        
 
     res.cookie("refreshToken", refreshToken, {

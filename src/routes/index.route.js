@@ -5,10 +5,10 @@ const userManagerRoute = require('./userMangaer.route.js')
 const pollRoute = require('./polls.route.js')
 const roleRoute = require('./role.route.js')
 module.exports = (app) => {
-    app.use('/auth',authRoute)
+    app.use('/api/v1/auth',authRoute)
     app.use('/api/v1/user',userRoute)
     app.use('/api/v2/user',userManagerRoute)
-    app.use('/api/',uploadRoute)
+    app.use('/api/v1/upload',uploadRoute)
     app.use('/api/v1/polls',pollRoute)
     app.use('/api/v1/role',roleRoute)
 }

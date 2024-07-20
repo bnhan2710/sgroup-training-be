@@ -1,5 +1,45 @@
 const router = require('express').Router();
 const knex = require('../configs/knexdb');
+const cacheService = require('../utils/cache.service');
+
+//Assign role to user
+router.post('/assign-role/:id',async(req,res)=>{
+    const userId = req.params.id;
+    const {role_id} = req.body;
+    try{
+        const user = await knex('users').select('*').where('id',userId).first();
+        if(!user){
+            return res.status(404).json('User not found');
+        }
+        await knex('user_role').where('user_id',userId).del();
+        await knex('user_role').insert({user_id:userId,role_id});
+       const loginUser = await cacheService.getOneUser(userId);
+         if(loginUser){
+              await cacheService.setOneUser(userId);
+         }
+        return res.status(200).json('Role assigned to user successfully');
+
+    }catch(err){
+        console.error('Error assigning role to user:',err);
+        res.status(500).json('Error assigning role to user');
+    }
+});
+
+//Read user_role
+router.get('get-role/:id',async(req,res)=>{
+    const userId = req.params.id;
+    try{
+        const userRole = await knex('user_role as ur')
+        .select('u.username as username','r.role_name as role')
+        .join('users as u','ur.id_user','u.id')
+        .join('role as r','ur.role_id','r.id')
+        .where('ur.id_user',userId);
+        return res.status(200).json(userRole);
+    }catch(err){
+        console.error('Error getting user_role:',err);
+        res.status(500).json('Error getting user_role');
+    }
+});
 
 //Read role_permission
 router.get('/:id', async (req, res) => {
@@ -16,6 +56,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json('Error getting role_permission');
     }
 });
+
 
 //Create role
 router.post('/', async (req, res) => {
@@ -42,8 +83,9 @@ router.post('/permission', async (req, res) => {
 });
 
 //Assign permission to role
-router.post('/:id/assign', async (req, res) => {
-    const { role_id, permission_id } = req.body;
+router.post('/assign/:id', async (req, res) => {
+    const role_id = req.params.id;
+    const {  permission_id } = req.body;
     try {
         await knex('role_permission').insert({ role_id, permission_id });
         return res.status(200).json('Permission assigned to role successfully');
@@ -54,7 +96,7 @@ router.post('/:id/assign', async (req, res) => {
 });
 
 //Remove permission from role
-router.delete('/:id/remove', async (req, res) => {
+router.delete('/remove/:id', async (req, res) => {
     const { role_id, permission_id } = req.body;
     try {
         await knex('role_permission').where({ role_id, permission_id }).del();

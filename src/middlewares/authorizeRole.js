@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const knex = require('../configs/knexdb');
 const cacheService = require('../utils/cache.service');
 
-const authorizeRole = (...allowedPermission) => {
+const authorizeRole = (allowedPermission) => {
        return async(req, res, next) => {
         const authHeader = req.headers.token;
         if (authHeader) {
@@ -12,12 +12,13 @@ const authorizeRole = (...allowedPermission) => {
                     return res.status(401).json("Token is not valid");
                 }
                 const decode = jwt.decode(token)
-                const userCache = cacheService.getOneUser(decode.id);
+                const userCache = await cacheService.getOneUser(decode.id);
+                console.log(userCache)
                 if(!userCache || !userCache.permissions) {
                     return res.status(403).json("You are not allowed to access this route");
                 }
-                const permissionArray = [...allowedPermission];
-                const Result = userCache.permissions.map((permission) => permissionArray.includes(permission)).find((result) => result === true);
+                console.log(allowedPermission)  
+               const Result = userCache.permissions.includes(allowedPermission); 
                 if(!Result) {
                     return res.status(403).json("You are not allowed to access this route");
                 }

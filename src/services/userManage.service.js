@@ -76,14 +76,22 @@ class userManageService {
 
   getUserWithPagination = async (page, pagesize) => {
     try {
-      const pageNumber = parseInt(page);
-      const skip = parseInt(pagesize) * (pageNumber - 1);
-      const users = await knex('users').select('*').limit(parseInt(pagesize)).offset(skip);
-
-      return { code: 200, message: users };
+      const PAGE_NUMBER = parseInt(page);
+      const _SKIP = parseInt(pagesize);
+      const users = await knex('users')
+        .select('*')
+          .limit(PAGE_NUMBER)
+          .offset((PAGE_NUMBER * (_SKIP - 1)));
+      return {
+          code: 200,
+          message: users
+      };
     } catch (err) {
       console.error(err);
-      return { code: 500, message: 'Get failed' };
+      return {
+        code: 500,
+        message: 'Get failed',
+      };
     }
   };
 }

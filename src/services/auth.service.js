@@ -60,7 +60,7 @@ const generateAccessToken = (user) => {
         return jwt.sign(
             { id: user.ID },
             process.env.SECRET_KEY,
-            { expiresIn: "90s" }
+            { expiresIn: "1d" }
         );
 };
 

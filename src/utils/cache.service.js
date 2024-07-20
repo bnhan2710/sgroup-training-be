@@ -8,8 +8,8 @@ class CacheService {
                 .select('r.id as role', 'r.role_name as role_name', 'p.permission_name as permission')
                 .join('user_role as ur', 'r.id', 'ur.role_id')
                 .leftJoin('role_permission as rp', 'r.id', 'rp.role_id')
-                .leftJoin('permission as p', 'rp.permission_id', 'p.id_permission')
-                .where('ur.id_user', userId);
+                .leftJoin('permission as p', 'rp.permission_id', 'p.id')
+                .where('ur.user_id', userId);
             // Extract unique roles
             const roles = Array.from(new Set(rolePermission.map(role => role.role)));
             // Extract unique permissions
