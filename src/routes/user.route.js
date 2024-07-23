@@ -6,7 +6,7 @@ const {authorizeRole} = require('../middlewares/authorizeRole.js')
 //GET ALL USERS
 router.get("/",verifyToken, authorizeRole('getAll'),userControllers.getAllUsers);
 //GET USER BY ID
-router.get("/:id", userControllers.getUserById);
+router.get("/:id",verifyToken,authorizeRole('getOne'), userControllers.getUserById);
 //CREATE USER
 router.post("/", userControllers.createUser);
 //UPDATE USER

@@ -13,11 +13,11 @@ const authorizeRole = (allowedPermission) => {
                 }
                 const decode = jwt.decode(token)
                 const userCache = await cacheService.getOneUser(decode.id);
-                console.log(userCache)
+                // console.log(userCache)
                 if(!userCache || !userCache.permissions) {
                     return res.status(403).json("You are not allowed to access this route");
                 }
-                console.log(allowedPermission)  
+                // console.log(allowedPermission)  
                const Result = userCache.permissions.includes(allowedPermission); 
                 if(!Result) {
                     return res.status(403).json("You are not allowed to access this route");
