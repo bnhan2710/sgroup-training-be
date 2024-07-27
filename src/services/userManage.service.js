@@ -1,6 +1,6 @@
 const knex = require('../configs/knexdb');
 const bcrypt = require('bcrypt');
-
+const ErrorResponse = require('../utils/error.response');
 class userManageService {
   createUser = async (user) => {
     const CreatedAt = new Date();
@@ -29,19 +29,19 @@ class userManageService {
   updateUser = async (id, user) => {
     const { gender, name, username, age, email } = user;
 
-    try {
+    // try {
       const userExists = await knex('users').where('id', id).select('id').first();
       if (!userExists) {
-        return { code: 404, message: 'User not found' };
+        throw new ErrorResponse(404, 'User not found');
       }
 
       await knex('users').where('id', id).update({ gender, name, username, age, email });
 
       return { code: 200, message: 'User updated successfully' };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: 'Update failed' };
-    }
+    // } catch (err) {
+    //   console.error(err);
+    //   return { code: 500, message: 'Update failed' };
+    // }
   };
 
   deleteUser = async (id) => {
@@ -61,17 +61,18 @@ class userManageService {
   };
 
   getUserById = async (id) => {
-    try {
+    // try {
       const user = await knex('users').where('id', id).select('*').first();
       if (!user) {
-        return { code: 404, message: 'User not found' };
+        // return { code: 404, message: 'User not found' };
+        throw new ErrorResponse(404, 'User not found');
       }
 
       return { code: 200, message: user };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: 'Get user failed ' };
-    }
+    // } catch (err) {
+    //   console.error(err);
+    //   return { code: 500, message: 'Get user failed ' };
+    // }
   };
 
   getUserWithPagination = async (page, pagesize) => {

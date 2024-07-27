@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const pool = require("./configs/database");
 const knex = require("./configs/knexdb");
+const errorHandle = require("./middlewares/errorHandle");
 dotenv.config();
 
 const port = process.env.PORT || 8000;
@@ -18,9 +19,14 @@ app.set("view engine", "pug");
 
 //Router
 route(app);
-app.use((req, res) => {
-  return res.status(404).send({ message: "NOT FOUND" });
-});
+//Error handling
+app.use((req, res, next) => {
+  const error = new Error('Not found');
+  error.name = 'CastError';
+  next(error);
+})
+
+app.use(errorHandle);
 
 app.listen(port, () => {
   console.log(`App listening on port: ${port}`);

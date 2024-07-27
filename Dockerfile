@@ -1,23 +1,25 @@
-# Version nodejs latest
+
 FROM node:21.7.3
 
-# Set the working directory
+# Set the work directory
 WORKDIR /
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm instal
 
-# Copy the rest of the application files
+# Copy the rest of the app file
 COPY . .
 
 # Copy .env file
 COPY .env .env
 
-# Expose the port the app runs on
+# Expose the port 
 EXPOSE 8000
 
-# Start the application
+# Start the app
 CMD ["npm", "start"]
+
+

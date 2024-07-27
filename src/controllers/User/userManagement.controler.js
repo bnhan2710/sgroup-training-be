@@ -11,16 +11,16 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const id = req.params.id;
-    try {
+    const id = req.params.id;   
+    // try { 
         const updatedUser = await userManagerService.updateUser(id, req.body);
         if(updatedUser){
             return res.status(updatedUser.code).json(updatedUser.message);
         }
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal server error' });
-    }
+    // } catch (err) {
+    //     console.error(err);
+    //     return res.status(500).json({ message: 'Internal server error' });
+    // }
 }
 
 const deleteUser = async (req, res) =>{
@@ -34,14 +34,9 @@ const deleteUser = async (req, res) =>{
 }}
 
 const getUserById = async(req, res) => {
-    try{
         const id = req.params.id;
         const getUserId = await userManagerService.getUserById(id);
         res.status(getUserId.code).json(getUserId.message);
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Internal server error"});
-    }
 }
 
 //Get User with Pagination
