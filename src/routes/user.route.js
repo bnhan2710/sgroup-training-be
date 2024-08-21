@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const userControllers = require("../controllers/User/user.controllers.js");
+const userControllers = require("../controllers/user/user.controllers.js");
 const verifyToken = require('../middlewares/verifyToken.js')
 const {authorizeRole} = require('../middlewares/authorizeRole.js')
 //GET ALL USERS

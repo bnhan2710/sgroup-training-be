@@ -7,8 +7,6 @@ class userManageService {
     const { gender, name, username, age, password, email } = user;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    try {
       await knex('users').insert({
         gender,
         name,
@@ -19,17 +17,11 @@ class userManageService {
         CreatedAt,
       });
 
-      return { code: 200, message: 'User created successfully' };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: 'Create failed' };
-    }
+      return { message: 'User created successfully' };
   };
 
   updateUser = async (id, user) => {
     const { gender, name, username, age, email } = user;
-
-    // try {
       const userExists = await knex('users').where('id', id).select('id').first();
       if (!userExists) {
         throw new ErrorResponse(404, 'User not found');
@@ -37,64 +29,47 @@ class userManageService {
 
       await knex('users').where('id', id).update({ gender, name, username, age, email });
 
-      return { code: 200, message: 'User updated successfully' };
-    // } catch (err) {
-    //   console.error(err);
-    //   return { code: 500, message: 'Update failed' };
-    // }
+      return { message: 'User updated successfully' };
   };
 
   deleteUser = async (id) => {
-    try {
       const userExists = await knex('users').where('id', id).select('id').first();
       if (!userExists) {
-        return { code: 404, message: 'User not found' };
+        throw new ErrorResponse(404,'User Not Found')
       }
 
       await knex('users').where('id', id).del();
-
-      return { code: 200, message: 'User deleted successfully' };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: 'Delete failed' };
-    }
+      return { message: 'User deleted successfully' };
   };
 
   getUserById = async (id) => {
-    // try {
       const user = await knex('users').where('id', id).select('*').first();
       if (!user) {
-        // return { code: 404, message: 'User not found' };
         throw new ErrorResponse(404, 'User not found');
       }
-
-      return { code: 200, message: user };
-    // } catch (err) {
-    //   console.error(err);
-    //   return { code: 500, message: 'Get user failed ' };
-    // }
+      return user
   };
 
   getUserWithPagination = async (page, pagesize) => {
-    try {
-      const PAGE_NUMBER = parseInt(page);
-      const _SKIP = parseInt(pagesize);
-      const users = await knex('users')
-        .select('*')
-          .limit(PAGE_NUMBER)
-          .offset((PAGE_NUMBER * (_SKIP - 1)));
-      return {
-          code: 200,
-          message: users
-      };
-    } catch (err) {
-      console.error(err);
-      return {
-        code: 500,
-        message: 'Get failed',
-      };
+
+    const PAGE_NUMBER = parseInt(page, 10);
+    const PAGE_SIZE = parseInt(pagesize, 10);
+    
+    if (isNaN(PAGE_NUMBER) || PAGE_NUMBER <= 0) {
+      throw new ErrorResponse(400, 'Invalid page number');
     }
-  };
+    
+    if (isNaN(PAGE_SIZE) || PAGE_SIZE <= 0) {
+      throw new ErrorResponse(400, 'Invalid page size');
+    }
+    
+    const users = await knex('users')
+      .select('*')
+      .limit(PAGE_SIZE)
+      .offset((PAGE_NUMBER - 1) * PAGE_SIZE);
+    
+    return users;
+    }
 }
 
 module.exports = new userManageService();
