@@ -35,7 +35,7 @@ const loginService = async (user) => {
     const { username, password } = user;
     try {
         const userInfo = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
-        if (userInfo.length === 0) {
+        if (userInfo[0].length === 0) {
             return { error: 'Username is incorrect' };
         }
         const userPass = (userInfo[0][0].PASSWORD)
@@ -48,9 +48,9 @@ const loginService = async (user) => {
 
         refreshTokens.push(refreshToken)
         // console.log(refreshTokens)
-            const { PASSWORD, SALT, FORGET_PASSWORD_TOKEN, FORGET_PASSWORD_TOKEN_EXPIRATION,CreatedBy,CreatedAt,...other } = userInfo[0][0];
-            return { accessToken,refreshToken,other};
+            return { accessToken,refreshToken};
     } catch (error) {
+        console.log(error)  
         return { error: 'Login failed!'};
     }
 };

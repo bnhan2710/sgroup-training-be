@@ -1,10 +1,8 @@
 const userManagerService = require('../../services/userManage.service');
 
 const create = async (req, res) => {
-
         const createdUser = await userManagerService.createUser(req.body);
         res.send(createdUser)
-
 }
 
 const update = async (req, res) => {
@@ -24,7 +22,6 @@ const getUserById = async(req, res) => {
         const getUserId = await userManagerService.getUserById(id);
         res.send({getUserId})
 }
-
 
 const getUserWithPagination = async(req,res) =>{
         const { page, size } = req.query;

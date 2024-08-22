@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const {accessToken,refreshToken,other,error} = await authService.loginService(req.body);
+    const {accessToken,refreshToken,error} = await authService.loginService(req.body);
     if (error) {
       return res.status(400).json({ message: error });
     }        
@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
       sameSite: "strict",
   });
 
-    res.status(200).json({ message: "Login successfuly!", accessToken});
+    res.status(200).json({accessToken});
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }

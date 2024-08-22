@@ -2,7 +2,7 @@ const router = require("express").Router();
 const pollsController = require("../controllers/polls.controller");
 const verifyToken = require('../middlewares/verifyToken');
 //CREATE POLL
-router.post("/create",verifyToken, pollsController.createPoll);
+router.post("/",verifyToken, pollsController.createPoll);
 //UPDATE POLL
 router.put("/update/:id", pollsController.updatePoll);
 //VIEW POLL ALL DETAILS
@@ -16,5 +16,5 @@ router.delete('/unsubmit',verifyToken,pollsController.unsubmitOption)
 //LOCK POLL
 router.post('/lock/:id',verifyToken,pollsController.lockPoll)
 //DELETE POLL
-router.delete("/delete/:id" ,verifyToken, pollsController.deletePoll);
+router.delete("/:id" ,verifyToken, pollsController.deletePoll);
 module.exports = router;

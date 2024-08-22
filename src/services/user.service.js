@@ -1,73 +1,63 @@
+const { SELECT } = require('sequelize/lib/query-types');
 const pool = require('../configs/database');
+const ErrorResponse = require('../utils/error.response');
 
 const getAllUsers = async () =>{
-    try {
         const users = await pool.query('SELECT * FROM users');
-       return users[0];
-    }catch(error) {
-        console.error(error);
-        return;
-    }
+        return users[0];
 }
 
 const getUserById = async (id) =>{
-    try {
         const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
         if (users.length === 0) {
-            return { message: 'User not found' };
+            throw new ErrorResponse(404,'User Not Found')
         }
         return users[0];
-    }catch(error) {
-        console.error(error);
-        return;
-    }
 }
 
 const createUser = async (user) =>{
     const { gender, name, username, age, password, email } = user; 
 
-    try {
+       const checkUserExits = await pool.query('SELECT * FROM users WHERE username = ?', [username])
+        if(checkUserExits.length!==0){
+            throw new ErrorResponse(400,'Username Already Exits')
+        }
         const insertQuery = `
             INSERT INTO users (gender, name, username, age, password, email)
             VALUES (?, ?, ?, ?, ?, ?)
         `;
         
         await pool.query(insertQuery, [gender, name, username, age, password, email]);
-        const [users] = await pool.query('SELECT * FROM users WHERE useranme = ?', [username]); 
-        return users[0];
-    } catch (err){
-        console.error(err);
-        return;
-    }
+        return {
+            message: 'Created successfully'
+        }
 }
 
 const updateUser = async (id, user) =>{
-    const { gender, name, username, age, password, email } = user; 
+    const { gender, name, age, password, email } = user; 
+    const checkUserExits = await pool.query('SELECT * FROM users WHERE id = ?', [id])
+    if(!checkUserExits){
+        throw new ErrorResponse(404, 'Not Found User ')
+    }
     const updateQuerry =`
     UPDATE users 
-    SET gender = ?, name = ?, username = ?, age = ?, password = ?, email = ?
+    SET gender = ?, name = ?, age = ?, password = ?, email = ?
     WHERE id = ?  
     `;
-    try {
-        await pool.query(updateQuerry,[gender, name, username, age, password, email, id]);
-    }catch(error){
-         console.error(error);
-         return;
+        await pool.query(updateQuerry,[gender, name, age, password, email, id]);
+    return {
+        message: 'Update successfully'
     }
     }
     
 const deleteUser = async (id) =>{
-    try {
         const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
         if (users.length === 0) {
-            return { message: 'User not found' };
+            throw new ErrorResponse(404, 'Not Found User')
         }
         await pool.query('DELETE FROM users WHERE id = ?', [id]);
-        return { message: 'User deleted successfully' };
-    }catch(error) {
-        console.error(error);
-        return;
-    }}
+        return { message: 'User deleted successfully'};
+    }
 
 module.exports = {
     getAllUsers,

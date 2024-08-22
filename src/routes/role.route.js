@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const knex = require('../configs/knexdb');
-const cacheService = require('../utils/cache.service');
+const cacheService = require('../services/cache.service')
 
 //Assign role to user
 router.post('/assign-role/:id',async(req,res)=>{

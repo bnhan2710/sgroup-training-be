@@ -1,11 +1,12 @@
-function asyncHandle(fn) {
+function asyncHandler(fn) {
     return async(req, res, next) => {
         try {
             await fn(req, res, next);
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }
 }
 
-module.exports = asyncHandle;
+module.exports = asyncHandler;

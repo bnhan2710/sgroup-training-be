@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const userManagerController = require("../controllers/user/userManagement.controler");
+const userManagerController = require('../controllers/User/userManagement.controler')
 const asyncHandler = require('../middlewares/asyncHandle')
 //CREATE USER
 router.post('/create',asyncHandler(userManagerController.create));
