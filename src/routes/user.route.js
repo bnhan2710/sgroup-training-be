@@ -9,9 +9,9 @@ router.get("/",verifyToken, authorizeRole('getAll'),asyncHandler(userControllers
 //GET USER BY ID
 router.get("/:id",verifyToken,authorizeRole('getOne'), asyncHandler(userControllers.getUserById));
 //CREATE USER
-router.post("/", asyncHandler(userControllers.createUser));
+router.post("/",verifyToken, authorizeRole('Create'), asyncHandler(userControllers.createUser));
 //UPDATE USER
 router.put("/:id", asyncHandler(userControllers.updateUser));
 //DELETE USER
-router.delete("/:id", asyncHandler(userControllers.deleteUser));
+router.delete("/:id",verifyToken, authorizeRole('Delete'), asyncHandler(userControllers.deleteUser));
 module.exports = router;

@@ -41,7 +41,6 @@ const uploadMultipleFiles = (req, res) => {
 
 
 
-
 module.exports = {
     uploadSingleFile,
     uploadMultipleFiles

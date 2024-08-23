@@ -1,8 +1,17 @@
 const { log } = require("handlebars");
 const authService = require("../../services/auth.service");
+const { validationResult } = require("express-validator");
 
 const registerUser = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors
+          .array()
+          .map((error) => `${error.msg}`)
+      return res.status(400).json({ errors: errorMessages });
+  }
+    console.log(errors.array())
     const user = await authService.registerService(req.body);
     if (user.error) {
       return res.status(400).json({ message: user.error });

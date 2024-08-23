@@ -1,11 +1,11 @@
 const router = require('express').Router()
 const authController = require('../controllers/auth/auth.controllers')
 const verifyToken = require('../middlewares/verifyToken')
-
+const validateAuth = require('../validations/auth.validation')
 // Login
 router.post('/login', authController.loginUser)
 // Register
-router.post('/register', authController.registerUser)
+router.post('/register',validateAuth.register, authController.registerUser)
 //Log out
 router.post('/logout',verifyToken, authController.logoutUser)
 // Refresh token
