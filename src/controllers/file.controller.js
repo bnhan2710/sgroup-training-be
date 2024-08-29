@@ -6,7 +6,7 @@ const uploadSingleFile = (req, res) => {
     }
 
     const { originalname, size, mimetype, path: filePath } = req.file;
-
+    
     const file = {
         originalname,
         size,
